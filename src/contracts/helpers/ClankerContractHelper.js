@@ -8,12 +8,21 @@ class ClankerContractHelper {
         this.provider = provider;
         validateAddresses(addresses.clanker);
         
+        // V3 (yang lama)
         this.clankerFactory = new ethers.Contract(
             addresses.clanker.factory,
             require('../abis/clanker/ClankerFactoryV3.json'),
             provider
         );
-        logger.detail('Initialized Factory', addresses.clanker.factory);
+        logger.detail('Initialized Factory V3', addresses.clanker.factory);
+
+        // 🔥 V4 BARU
+        this.clankerFactoryV4 = new ethers.Contract(
+            addresses.clanker.factoryV4,
+            require('../abis/clanker/ClankerFactoryV4.json'),
+            provider
+        );
+        logger.detail('Initialized Factory V4', addresses.clanker.factoryV4);
 
         this.clankerPresale = new ethers.Contract(
             addresses.clanker.presale,
@@ -23,22 +32,13 @@ class ClankerContractHelper {
         logger.detail('Initialized Presale', addresses.clanker.presale);
     }
 
-    async isPositionLocked(positionId) {
-        try {
-            return await this.clankerFactory.getLockedPosition(positionId);
-        } catch (error) {
-            logger.error(`Error checking position lock: ${error.message}`);
-            return false;
-        }
-    }
-
     getTokenContract(address) {
         return new ethers.Contract(
             address,
-            require('../abis/token/Token.json'),
+            require('../contracts/abis/token/Token.json'),
             this.provider
         );
     }
 }
 
-module.exports = ClankerContractHelper; 
+module.exports = ClankerContractHelper;
